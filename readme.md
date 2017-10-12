@@ -1,6 +1,6 @@
-#ARKit Workshop @VRConf 6 november 2017
+# ARKit Workshop @VRConf 6 november 2017
 
-###ARKit "Hello World" with Apple SceneKit Framework in Swift for Xcode 9
+### ARKit "Hello World" with Apple SceneKit Framework in Swift for Xcode 9
 
 
 **Documentation**
@@ -48,108 +48,109 @@ Apple ARKit Resources:
 
 5. **Find the right scale for the model**
 
-  * Iterative: Run the app and tweak the scale of your model to fit it into the real world around you seen through your device. Tips! The bounding box will tell you the size of your model in meters.
+    * Iterative: Run the app and tweak the scale of your model to fit it into the real world around you seen through your device. Tips! The bounding box will tell you the size of your model in meters.
 
 6. **Keep reference to treeNode**
 
-  * Make the treeNode into a class member thus accessible outside any function and change the referencing accordingly.
+    * Make the treeNode into a class member thus accessible outside any function and change the referencing accordingly.
 
-  ``` swift
-    class ViewController: UIViewController, ARSCNViewDelegate {
+    ``` swift
+      class ViewController: UIViewController, ARSCNViewDelegate {
 
-      var treeNode: SCNNode?
-      ...
-    }
-  ```
+        var treeNode: SCNNode?
+        ...
+      }
+    ```
 
 7. **Detect and visualise horizontal planes in the real world**
 
-  * Turn on debug options to be able to see what Feature Points ARKit finds. Also add the World Origin to the debug options to see the axis (x, y, z) of the coordinate system in the augmented world.
+    * Turn on debug options to be able to see what Feature Points ARKit finds. Also add the World Origin to the debug options to see the axis (x, y, z) of the coordinate system in the augmented world.
 
-  ``` swift
-    sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
-  ```
+    ``` swift
+      sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+    ```
 
-   * Make sure your scene is delegate to protocol ARSCNViewDelegate for ViewController
+    * Make sure your scene is delegate to protocol ARSCNViewDelegate for ViewController
 
-   ``` swift
-   class ViewController: UIViewController, ARSCNViewDelegate {
-     override func viewDidLoad() {
-        self.sceneView.delegate = self
-   ```
+    ``` swift
+    class ViewController: UIViewController, ARSCNViewDelegate {
+      override func viewDidLoad() {
+         self.sceneView.delegate = self
+    ```
 
-   * Set the ARKit plane detection to horizontal where you set up the configuration of the session
-   ``` swift
-    configuration.planeDetection = .horizontal
-  ```
+    * Set the ARKit plane detection to horizontal where you set up the configuration of the session
 
-   * Create a class member reference planes which is a dictionary storing key value pairs of SceneKit's PlaneAnchor identifiers (uuidString) and it's nodes. Place it alongside where you placed the treeNode reference. This will hold the reference to all the planes ARKit finds.
+    ``` swift
+     configuration.planeDetection = .horizontal
+    ```
 
-   ``` swift
-    var planes: [String: SCNNode] = [:]
-   ```
+    * Create a class member reference planes which is a dictionary storing key value pairs of SceneKit's PlaneAnchor identifiers (uuidString) and it's nodes. Place it alongside where you placed the treeNode reference. This will hold the reference to all the planes ARKit finds.
 
-   * Create an extension to ViewController and handle session updates for the renderer function of nodes inside of didAdd, didUpdate and didRemove.
+    ``` swift
+     var planes: [String: SCNNode] = [:]
+    ```
 
-   * When adding a node in didAdd, create a geometry matching the plane's extent on the X and Z axes and keep a reference to the new node in a dictionary for later updates.
+    * Create an extension to ViewController and handle session updates for the renderer function of nodes inside of didAdd, didUpdate and didRemove.
 
-   * In the didUpate, ARKit has registrered more anchor points to an existing plane. In the didRemove, ARKit sees that two different planes actually is one and merges them.
+    * When adding a node in didAdd, create a geometry matching the plane's extent on the X and Z axes and keep a reference to the new node in a dictionary for later updates.
 
-   * Run the app to see the ARKit plane detection work in action. Note! Give your device and ARKit a hand by moving it forward/backward towards a well lit flat surface preferably with some contrasting details. This might take some seconds.
+    * In the didUpate, ARKit has registrered more anchor points to an existing plane. In the didRemove, ARKit sees that two different planes actually is one and merges them.
 
-   ``` swift
-   extension ViewController {
+    * Run the app to see the ARKit plane detection work in action. Note! Give your device and ARKit a hand by moving it forward/backward towards a well lit flat surface preferably with some contrasting details. This might take some seconds.
 
-     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-         // This visualization covers only detected planes.
-         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+    ``` swift
+    extension ViewController {
 
-         // Create a SceneKit plane to visualize the node using its position and extent.
-         let plane = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
-         let planeNode = SCNNode(geometry: plane)
-         planeNode.position = SCNVector3Make(planeAnchor.center.x, 0, planeAnchor.center.z)
+      func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+          // This visualization covers only detected planes.
+          guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
 
-         // SCNPlanes are vertically oriented in their local coordinate space.
-         // Rotate it to match the horizontal orientation of the ARPlaneAnchor.
-         planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)
+          // Create a SceneKit plane to visualize the node using its position and extent.
+          let plane = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
+          let planeNode = SCNNode(geometry: plane)
+          planeNode.position = SCNVector3Make(planeAnchor.center.x, 0, planeAnchor.center.z)
 
-         // Set a semi transparent (blue) color on the plane so it will be visible to the eye.
-         let color = SCNMaterial()
-         color.diffuse.contents = UIColor(red: 0, green: 0, blue: 1, alpha: 0.4)
-         plane.materials = [color]
+          // SCNPlanes are vertically oriented in their local coordinate space.
+          // Rotate it to match the horizontal orientation of the ARPlaneAnchor.
+          planeNode.transform = SCNMatrix4MakeRotation(-Float.pi / 2, 1, 0, 0)
 
-         // ARKit owns the node corresponding to the anchor, so make the plane a child node.
-         node.addChildNode(planeNode)
+          // Set a semi transparent (blue) color on the plane so it will be visible to the eye.
+          let color = SCNMaterial()
+          color.diffuse.contents = UIColor(red: 0, green: 0, blue: 1, alpha: 0.4)
+          plane.materials = [color]
 
-         // keep node for reference later to make updates
-         let key = planeAnchor.identifier.uuidString
-         self.planes[key] = planeNode
-     }
+          // ARKit owns the node corresponding to the anchor, so make the plane a child node.
+          node.addChildNode(planeNode)
 
-     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+          // keep node for reference later to make updates
+          let key = planeAnchor.identifier.uuidString
+          self.planes[key] = planeNode
+      }
 
-         let key = planeAnchor.identifier.uuidString
-         if let existingPlane = self.planes[key] {
-             if let geo = existingPlane.geometry as? SCNPlane {
-                 geo.width = CGFloat(planeAnchor.extent.x)
-                 geo.height = CGFloat(planeAnchor.extent.z)
-             }
-             existingPlane.position = SCNVector3Make(planeAnchor.center.x, -0.005, planeAnchor.center.z)
-         }
-     }
+      func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+          guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
 
-     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
-         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+          let key = planeAnchor.identifier.uuidString
+          if let existingPlane = self.planes[key] {
+              if let geo = existingPlane.geometry as? SCNPlane {
+                  geo.width = CGFloat(planeAnchor.extent.x)
+                  geo.height = CGFloat(planeAnchor.extent.z)
+              }
+              existingPlane.position = SCNVector3Make(planeAnchor.center.x, -0.005, planeAnchor.center.z)
+          }
+      }
 
-         let key = planeAnchor.identifier.uuidString
-         if let existingPlane = self.planes[key] {
-             existingPlane.removeFromParentNode()
-             self.planes.removeValue(forKey: key)
-         }
-     }
-   }
-   ```
+      func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
+          guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+
+          let key = planeAnchor.identifier.uuidString
+          if let existingPlane = self.planes[key] {
+              existingPlane.removeFromParentNode()
+              self.planes.removeValue(forKey: key)
+          }
+      }
+    }
+    ```
 
 8. **Implement an override for touchesBegan and move the model when touching the device screen.**
 
