@@ -1,6 +1,6 @@
 # ARKit Workshop @VRConf 6 november 2017
 
-### ARKit "Hello World" with Apple SceneKit Framework in Swift for Xcode 9
+### ARKit "Hello World" with Apple SceneKit Framework in Swift 4 for Xcode 9
 
 
 **Documentation**
@@ -42,22 +42,22 @@ Apple ARKit Resources:
    * "shipMesh" is the identity of the spaceship model shown in the Node inspector, put your own name for your model.
 
    ``` swift
-   let treeNode = scene.rootNode.childNode(withName: "shipMesh", recursively: true)
-   treeNode?.position = SCNVector3Make(0, 0, -1)
+   let modelNode = scene.rootNode.childNode(withName: "shipMesh", recursively: true)
+   modelNode?.position = SCNVector3Make(0, 0, -1)
    ```
 
 5. **Find the right scale for the model**
 
     * Iterative: Run the app and tweak the scale of your model to fit it into the real world around you seen through your device. Tips! The bounding box will tell you the size of your model in meters.
 
-6. **Keep reference to treeNode**
+6. **Keep reference to model node**
 
-    * Make the treeNode into a class member thus accessible outside any function and change the referencing accordingly.
+    * Make the modelNode into a class member thus accessible outside any function and change the referencing accordingly.
 
     ``` swift
       class ViewController: UIViewController, ARSCNViewDelegate {
 
-        var treeNode: SCNNode?
+        var modelNode: SCNNode?
         ...
       }
     ```
@@ -84,7 +84,7 @@ Apple ARKit Resources:
      configuration.planeDetection = .horizontal
     ```
 
-    * Create a class member reference planes which is a dictionary storing key value pairs of SceneKit's PlaneAnchor identifiers (uuidString) and it's nodes. Place it alongside where you placed the treeNode reference. This will hold the reference to all the planes ARKit finds.
+    * Create a class member reference planes which is a dictionary storing key value pairs of SceneKit's PlaneAnchor identifiers (uuidString) and it's nodes. Place it alongside where you placed the modelNode reference. This will hold the reference to all the planes ARKit finds.
 
     ``` swift
      var planes: [String: SCNNode] = [:]
@@ -96,7 +96,7 @@ Apple ARKit Resources:
 
     * In the didUpate, ARKit has registrered more anchor points to an existing plane. In the didRemove, ARKit sees that two different planes actually is one and merges them.
 
-    * Run the app to see the ARKit plane detection work in action. Note! Give your device and ARKit a hand by moving it forward/backward towards a well lit flat surface preferably with some contrasting details. This might take some seconds.
+    * Run the app to see the ARKit plane detection work in action. Note! Give your device and ARKit a hand by moving it forward/backward towards a well lit flat surface preferably with some contrasting details. This might take some seconds. Give it even more time and you will see didAdd and didRemove in action when planes are continues added and merged if you for example try to do plane detection on the floor or the ceiling.
 
     ``` swift
     extension ViewController {
@@ -171,7 +171,7 @@ Apple ARKit Resources:
         if let match = results.first {
             let t = match.worldTransform
             let hitPosition  = SCNVector3(x: t.columns.3.x, y: t.columns.3.y, z: t.columns.3.z)
-            treeNode?.position = hitPosition
+            modelNode?.position = hitPosition
         }
     }
    ```
@@ -188,9 +188,9 @@ Apple ARKit Resources:
 
    ``` swift
 
-   //treeNode?.position = hitPosition
+   //modelNode?.position = hitPosition
 
-   let modelClone = treeNode!.clone()
+   let modelClone = modelNode!.clone()
    modelClone.position = hitPosition
    sceneView.scene.rootNode.addChildNode(modelClone)
    ```
