@@ -52,7 +52,7 @@
 
       - Tip! If you also want to pre-fill the "Automatic Signing Team ID"-field you can find your Apple Developer Account Team ID String  (under the Membership page) here
 
-      [https://developer.apple.com/account/#/membership](https://developer.apple.com/account/#/membership)
+        [https://developer.apple.com/account/#/membership](https://developer.apple.com/account/#/membership)
 
     * Press the "Build"-button.
 
@@ -68,7 +68,7 @@
 
     * In the "General Settings" for the Xcode-project, choose your Apple Developer Account for the "Team" which enables you to run the app on your device.
 
-    Tip! This step can be avoided if you pre-filled your Team ID according to a tip in one of the previous step when filling out "Player Settings" in Unity before the build.
+      Tip! This step can be avoided if you pre-filled your Team ID according to a tip in one of the previous step when filling out "Player Settings" in Unity before the build.
 
     * ARKit is not supported by the Xcode Simulator. Select your personal device to run from and then hit the "Run"-button.
 
@@ -167,7 +167,6 @@
     public void Move(){
 
   		if (!animation.isPlaying) {
-
   			animation.Play ();
   			shouldMove = true;
   		} else {
@@ -184,9 +183,7 @@
   	void Update () {
 
   		if (shouldMove) {
-
   			Vector3 localForward = m_ModelTransform.InverseTransformDirection(m_ModelTransform.forward);
-
   			m_ModelTransform.Translate (localForward * Time.deltaTime * .03f);
   		}
   	}
@@ -256,10 +253,10 @@
       Tip! Print syntax for debugging:
 
       ```CS
-      print ("inside Move");
+      print("inside Move");
       ```
 
-      * Well done!
+    * Well done!
 
  ### EXTRA LAB ASSIGNMENTS for the eager ones
 
