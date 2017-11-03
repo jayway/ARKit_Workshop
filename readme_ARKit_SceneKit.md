@@ -16,7 +16,7 @@ Apple ARKit Resources:
 
     * Choose swift as language and SceneKit as Content Technology.
 
-2. **Run the app on your device.**
+2. **Run the app on your device**
 
    * Check that you can see a spaceship floating around in the room through your device and that you see the AR-effect when you move yourself and the device around.
 
@@ -24,37 +24,38 @@ Apple ARKit Resources:
 
 3. **Add a 3D-model**
 
-   * Look for a model that is of the format .dae and consists of less than 10k polys (millions of polys will make the processor work harder than it can handle).
+  * Fetch a graphical 3D-model of a tree (courtesy of [Turbosquid](https://www.turbosquid.com/)) here:
 
-   * Link to free models filtered according to above criteria (sign up for a free account):
-   https://www.turbosquid.com/Search/3D-Models?keyword=&search_type=free&media_typeid=2&file_type=194&min_poly=0k&max_poly=10k
+    [https://github.com/jayway](https://github.com/jayway)
 
-   * Add your downloaded .dae-file in to the Xcode-folder art.scnassets. Notice the coordinate system and how it's oriented.
+   * Add the downloaded .dae-file in to the Xcode-folder art.scnassets. Notice how you place the model into the coordinate system and how it's oriented.
 
-   * Preview your model by clicking on the file inside Xcode to make sure it's not corrupted.
+   * Preview the model by clicking on the file inside Xcode to make sure it's not corrupted.
 
-   * Load your model into the scene by replacing the spaceship-filename with your model-filename where the scene is created in the ViewController.
+   * Load the model into the scene by replacing the spaceship-filename with your model-filename where the scene is created in the ViewController.
 
 4. **Move start position of the model**
 
    * Default position of both model and camera is (0,0,0). So you might not see anything at start until you move the camera/device out from inside the model. Or you could move the model to be 1 m in front of the camera at start.
 
-   * "shipMesh" is the identity of the spaceship model shown in the Node inspector, put your own name for your model.
+   * "shipMesh" is the identity of the spaceship model shown in the Node inspector, find out the reference name for your model.
 
-   ``` swift
+   ```swift
    let modelNode = scene.rootNode.childNode(withName: "shipMesh", recursively: true)
    modelNode?.position = SCNVector3Make(0, 0, -1)
    ```
 
 5. **Find the right scale for the model**
 
-    * Iterative: Run the app and tweak the scale of your model to fit it into the real world around you seen through your device. Tips! The bounding box will tell you the size of your model in meters.
+    * Iterative: Run the app and tweak the scale of the model to fit it into the real world around you seen through your device.
+
+      Tip! The bounding box will tell you the size of the model in meters.
 
 6. **Keep reference to model node**
 
     * Make the modelNode into a class member thus accessible outside any function and change the referencing accordingly.
 
-    ``` swift
+    ```swift
       class ViewController: UIViewController, ARSCNViewDelegate {
 
         var modelNode: SCNNode?
@@ -66,13 +67,13 @@ Apple ARKit Resources:
 
     * Turn on debug options to be able to see what Feature Points ARKit finds. Also add the World Origin to the debug options to see the axis (x, y, z) of the coordinate system in the augmented world.
 
-    ``` swift
+    ```swift
       sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
     ```
 
     * Make sure your scene is delegate to protocol ARSCNViewDelegate for ViewController
 
-    ``` swift
+    ```swift
     class ViewController: UIViewController, ARSCNViewDelegate {
       override func viewDidLoad() {
          self.sceneView.delegate = self
@@ -80,13 +81,13 @@ Apple ARKit Resources:
 
     * Set the ARKit plane detection to horizontal where you set up the configuration of the session
 
-    ``` swift
+    ```swift
      configuration.planeDetection = .horizontal
     ```
 
     * Create a class member reference planes which is a dictionary storing key value pairs of SceneKit's PlaneAnchor identifiers (uuidString) and it's nodes. Place it alongside where you placed the modelNode reference. This will hold the reference to all the planes ARKit finds.
 
-    ``` swift
+    ```swift
      var planes: [String: SCNNode] = [:]
     ```
 
@@ -98,7 +99,7 @@ Apple ARKit Resources:
 
     * Run the app to see the ARKit plane detection work in action. Note! Give your device and ARKit a hand by moving it forward/backward towards a well lit flat surface preferably with some contrasting details. This might take some seconds. Give it even more time and you will see didAdd and didRemove in action when planes are continues added and merged if you for example try to do plane detection on the floor or the ceiling.
 
-    ``` swift
+    ```swift
     extension ViewController {
 
       func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
@@ -162,7 +163,7 @@ Apple ARKit Resources:
 
    * Play with different types of intersection algorithms for finding anchor points: featurePoint, estimatedHorizontalPlane, existingPlane, existingPlaneUsingExtent. Several can be used by adding more to the array of types.
 
-   ``` swift
+   ```swift
    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         var results = sceneView.hitTest(touch.location(in: sceneView), types: [.existingPlaneUsingExtent])
@@ -186,7 +187,7 @@ Apple ARKit Resources:
 
    * Run the app and place the model on different locations of the room. Notice that you can walk away from one point and the model will still be there when you return!
 
-   ``` swift
+   ```swift
 
    //modelNode?.position = hitPosition
 
@@ -194,3 +195,16 @@ Apple ARKit Resources:
    modelClone.position = hitPosition
    sceneView.scene.rootNode.addChildNode(modelClone)
    ```
+
+   * Well done!
+
+
+   ### EXTRA LAB ASSIGNMENT for the eager ones
+
+1. **Import another model and exchange it with the tree**
+   * Look for a model that is of the format .dae and consists of less than 10k polys (millions of polys will make the processor work harder than it may be able to handle).
+
+   * Link to free models filtered according to above criteria (sign up for a free account):
+   https://www.turbosquid.com/Search/3D-Models?keyword=&search_type=free&media_typeid=2&file_type=194&min_poly=0k&max_poly=10k
+
+   * Check that your downloaded model comes with the y-axis pointing upwards and that it's not corrupt in any other way. Stuff like this can be fixed in a 3D-modelling program like Blender, but this ARKit workshop does not cover making of the model.
