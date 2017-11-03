@@ -26,9 +26,11 @@ Apple ARKit Resources:
 
   * Fetch a graphical 3D-model of a tree (courtesy of [Turbosquid](https://www.turbosquid.com/)) here:
 
-    [https://github.com/jayway](https://github.com/jayway)
+    [https://github.com/jayway/ARKit_Workshop/tree/master/tree_dae](https://github.com/jayway/ARKit_Workshop/tree/master/tree_dae)
 
-   * Add the downloaded .dae-file in to the Xcode-folder art.scnassets. Notice how you place the model into the coordinate system and how it's oriented.
+   * Add the downloaded .dae-file in to the Xcode-folder art.scnassets.
+
+    Tip! Since Xcode 9.1 you need to hard copy assets files into the right folder (for exemple in Finder), only dragging them into Xcode will link but not copy. Notice how you place the model into the coordinate system and how it's oriented.
 
    * Preview the model by clicking on the file inside Xcode to make sure it's not corrupted.
 
