@@ -24,17 +24,17 @@ Apple ARKit Resources:
 
 3. **Add a 3D-model**
 
-  * Fetch a graphical 3D-model of a tree (courtesy of [Turbosquid](https://www.turbosquid.com/)) here:
+    * Fetch a graphical 3D-model of a tree (courtesy of [Turbosquid](https://www.turbosquid.com/)) here:
 
     [https://github.com/jayway/ARKit_Workshop/tree/master/tree_dae](https://github.com/jayway/ARKit_Workshop/tree/master/tree_dae)
 
-   * Add the downloaded .dae-file in to the Xcode-folder art.scnassets.
+    * Add the downloaded .dae-file in to the Xcode-folder art.scnassets.
 
-    Tip! Since Xcode 9.1 you need to hard copy assets files into the right folder (for exemple in Finder), only dragging them into Xcode will link but not copy. Notice how you place the model into the coordinate system and how it's oriented.
+      Tip! Since Xcode 9.1 you need to hard copy assets files into the right folder (for exemple in Finder), only dragging them into Xcode will link but not copy. Notice how you place the model into the coordinate system and how it's oriented.
 
-   * Preview the model by clicking on the file inside Xcode to make sure it's not corrupted.
+    * Preview the model by clicking on the file inside Xcode to make sure it's not corrupted.
 
-   * Load the model into the scene by replacing the spaceship-filename with your model-filename where the scene is created in the ViewController.
+    * Load the model into the scene by replacing the spaceship-filename with your model-filename where the scene is created in the ViewController.
 
 4. **Move start position of the model**
 
