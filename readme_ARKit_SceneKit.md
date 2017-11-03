@@ -1,6 +1,6 @@
 # ARKit Workshop @VRConf 6 november 2017
 
-### ARKit "Hello World" with Apple SceneKit Framework in Swift 4 for Xcode 9
+### ARKit "Hello World" with Apple SceneKit Framework in Xcode 9 and Swift 4
 
 
 **Documentation**
